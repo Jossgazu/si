@@ -148,6 +148,21 @@ def main():
         if key in tools:
             print(f"{BOLD}[{i}/6] {label}{X}"); all_subs.update(fn()); print()
 
+    def deduplicate(subs):
+        result = set(subs)
+        for s in subs:
+            parts = s.split(".")
+            if len(parts) > 2:
+                parent = ".".join(parts[1:])
+                if parent in subs:
+                    result.discard(s)
+        return result
+
+    before = len(all_subs)
+    all_subs = deduplicate(all_subs)
+    removed = before - len(all_subs)
+    if removed: info(f"Deduplicación: {removed} entradas redundantes eliminadas")
+
     sorted_subs = sorted(all_subs)
     print(f"{G}{BOLD}{'─'*55}\n  Total: {len(sorted_subs)} subdominios únicos  |  {datetime.now()-start}\n{'─'*55}{X}")
     for s in sorted_subs: print(f"  {G}•{X} {s}")
