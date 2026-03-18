@@ -100,7 +100,7 @@ echo -e "${GREEN}[+] Todas las herramientas verificadas${NC}"
 # 1. Sublist3r
 echo -e "${BLUE}[*] Ejecutando Sublist3r...${NC}"
 if command -v sublist3r &> /dev/null; then
-    timeout 0.5 sublist3r -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/sublist3r.txt" -t 20 2>/dev/null
+    timeout 0.5 sublist3r -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/sublist3r.txt" -t 20 -e vt 2>/dev/null
     if [ -f "${TEMP_DIR}/sublist3r.txt" ]; then
         echo -e "${GREEN}[+] Sublist3r completado: $(wc -l < ${TEMP_DIR}/sublist3r.txt) subdominios${NC}"
     fi
@@ -111,7 +111,7 @@ fi
 # 2. Amass
 echo -e "${BLUE}[*] Ejecutando Amass...${NC}"
 if command -v amass &> /dev/null; then
-    timeout 0.5 amass enum -passive -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/amass.txt" 2>/dev/null
+    timeout 0.5 amass enum -passive -max-dns-queries 100 -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/amass.txt" 2>/dev/null
     if [ -f "${TEMP_DIR}/amass.txt" ]; then
         echo -e "${GREEN}[+] Amass completado: $(wc -l < ${TEMP_DIR}/amass.txt) subdominios${NC}"
     fi
