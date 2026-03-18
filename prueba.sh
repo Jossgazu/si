@@ -100,7 +100,8 @@ echo -e "${GREEN}[+] Todas las herramientas verificadas${NC}"
 # 1. Sublist3r
 echo -e "${BLUE}[*] Ejecutando Sublist3r...${NC}"
 if command -v sublist3r &> /dev/null; then
-    timeout 0.5 sublist3r -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/sublist3r.txt" -t 20 -e vt 2>/dev/null
+    sublist3r -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/sublist3r.txt" -t 20 -e vt 2>/dev/null
+    sleep 0.5
     if [ -f "${TEMP_DIR}/sublist3r.txt" ]; then
         echo -e "${GREEN}[+] Sublist3r completado: $(wc -l < ${TEMP_DIR}/sublist3r.txt) subdominios${NC}"
     fi
@@ -111,7 +112,8 @@ fi
 # 2. Amass
 echo -e "${BLUE}[*] Ejecutando Amass...${NC}"
 if command -v amass &> /dev/null; then
-    timeout 0.5 amass enum -passive -max-dns-queries 100 -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/amass.txt" 2>/dev/null
+    amass enum -passive -max-dns-queries 100 -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/amass.txt" 2>/dev/null
+    sleep 0.5
     if [ -f "${TEMP_DIR}/amass.txt" ]; then
         echo -e "${GREEN}[+] Amass completado: $(wc -l < ${TEMP_DIR}/amass.txt) subdominios${NC}"
     fi
@@ -122,7 +124,8 @@ fi
 # 3. theHarvester
 echo -e "${BLUE}[*] Ejecutando theHarvester...${NC}"
 if command -v theHarvester &> /dev/null; then
-    timeout 0.5 theHarvester -d "$TARGET_DOMAIN" -b all -f "${TEMP_DIR}/theharvester.xml" 2>/dev/null
+    theHarvester -d "$TARGET_DOMAIN" -b all -f "${TEMP_DIR}/theharvester.xml" 2>/dev/null
+    sleep 0.5
     # Extraer subdominios del XML si existe
     if [ -f "${TEMP_DIR}/theharvester.xml" ]; then
         grep -oP '(?<=<host>)[^<]+' "${TEMP_DIR}/theharvester.xml" | grep -E "\.$TARGET_DOMAIN" > "${TEMP_DIR}/theharvester.txt" 2>/dev/null
@@ -135,7 +138,8 @@ fi
 # 4. Subfinder
 echo -e "${BLUE}[*] Ejecutando Subfinder...${NC}"
 if command -v subfinder &> /dev/null; then
-    timeout 0.5 subfinder -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/subfinder.txt" -silent 2>/dev/null
+    subfinder -d "$TARGET_DOMAIN" -o "${TEMP_DIR}/subfinder.txt" -silent 2>/dev/null
+    sleep 0.5
     if [ -f "${TEMP_DIR}/subfinder.txt" ]; then
         echo -e "${GREEN}[+] Subfinder completado: $(wc -l < ${TEMP_DIR}/subfinder.txt) subdominios${NC}"
     fi
@@ -146,7 +150,8 @@ fi
 # 5. DNSrecon
 echo -e "${BLUE}[*] Ejecutando DNSRecon...${NC}"
 if command -v dnsrecon &> /dev/null; then
-    timeout 0.5 dnsrecon -d "$TARGET_DOMAIN" -t brt -o "${TEMP_DIR}/dnsrecon.txt" 2>/dev/null
+    dnsrecon -d "$TARGET_DOMAIN" -t brt -o "${TEMP_DIR}/dnsrecon.txt" 2>/dev/null
+    sleep 0.5
     # Extraer solo subdominios del output
     if [ -f "${TEMP_DIR}/dnsrecon.txt" ]; then
         grep -oE "^[a-zA-Z0-9.-]+\.$TARGET_DOMAIN" "${TEMP_DIR}/dnsrecon.txt" | sort -u > "${TEMP_DIR}/dnsrecon_clean.txt" 2>/dev/null
